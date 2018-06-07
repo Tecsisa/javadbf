@@ -75,7 +75,7 @@ public class DBFHeader {
 	}
 
 	
-	void read( DataInput dataInput, Charset charset, boolean showDeletedRows) throws IOException {
+	void read( DataInput dataInput, Charset charset, boolean showDeletedRows, boolean longCharSupportEnabled) throws IOException {
 
 		this.signature = dataInput.readByte(); /* 0 */
 
@@ -123,14 +123,14 @@ public class DBFHeader {
 		DBFField field = null;
 		if (isDB7()) {
 			/* 48 each */
-			while ((field = DBFField.createFieldDB7(dataInput,this.usedCharset))!= null) {
+			while ((field = DBFField.createFieldDB7(dataInput,this.usedCharset, longCharSupportEnabled))!= null) {
 				v_fields.add(field);
 			}
 		}
 		else {
 			/* 32 each */
 			boolean useFieldFlags = supportsFieldFlags();
-			while ((field = DBFField.createField(dataInput,this.usedCharset, useFieldFlags))!= null) {				
+			while ((field = DBFField.createField(dataInput,this.usedCharset, useFieldFlags, longCharSupportEnabled))!= null) {
 				v_fields.add(field);
 			}
 

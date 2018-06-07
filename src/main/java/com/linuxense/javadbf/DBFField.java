@@ -170,7 +170,7 @@ public class DBFField {
 	 * @return Returns the created DBFField object.
 	 * @throws IOException  If any stream reading problems occures.
 	 */
-	protected static DBFField createField(DataInput in, Charset charset, boolean useFieldFlags) throws IOException {
+	protected static DBFField createField(DataInput in, Charset charset, boolean useFieldFlags, boolean longCharSupportEnabled) throws IOException {
 
 		DBFField field = new DBFField();
 
@@ -203,7 +203,9 @@ public class DBFField {
 		field.setFieldsFlag = in.readByte(); /* 23 */
 		in.readFully(field.reserv4); /* 24-30 */
 		field.indexFieldFlag = in.readByte(); /* 31 */
-		adjustLengthForLongCharSupport(field);
+		if(longCharSupportEnabled) {
+			adjustLengthForLongCharSupport(field);
+		}
 		
 		if (!useFieldFlags) {
 			field.reserv2 = 0;
@@ -212,7 +214,7 @@ public class DBFField {
 		return field;
 	}
 
-	protected static DBFField createFieldDB7(DataInput in, Charset charset) throws IOException {
+	protected static DBFField createFieldDB7(DataInput in, Charset charset, boolean longCharSupportEnabled) throws IOException {
 
 		DBFField field = new DBFField();
 
@@ -244,7 +246,10 @@ public class DBFField {
 		in.readInt(); // 40-43 nextAuto
 		in.readInt(); // 44-47 reserv
 
-		adjustLengthForLongCharSupport(field);
+		if(longCharSupportEnabled) {
+			adjustLengthForLongCharSupport(field);
+		}
+
 		return field;
 	}
 	

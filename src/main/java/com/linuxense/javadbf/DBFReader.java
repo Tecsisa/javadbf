@@ -214,12 +214,28 @@ public class DBFReader extends DBFBase implements Closeable {
 	 * @param showDeletedRows can be used to identify records that have been deleted.
 	 */
 	public DBFReader(InputStream in, Charset charset, boolean showDeletedRows) {
+		this(in, charset, showDeletedRows, true);
+	}
+
+	/**
+	 * Initializes a DBFReader object.
+	 *
+	 * When this constructor returns the object will have completed reading the
+	 * header (meta date) and header information can be queried there on. And it
+	 * will be ready to return the first row.
+	 *
+	 * @param in the InputStream where the data is read from.
+	 * @param charset charset used to decode field names and field contents. If null, then is autedetected from dbf file
+	 * @param showDeletedRows can be used to identify records that have been deleted.
+	 * @param longCharSupportEnabled enable long char fields using decimal count as extra size byte in the header field descriptor
+	 */
+	public DBFReader(InputStream in, Charset charset, boolean showDeletedRows, boolean longCharSupportEnabled) {
 		try {
 			this.showDeletedRows = showDeletedRows;
 			this.inputStream = in;
 			this.dataInputStream = new DataInputStream(this.inputStream);
 			this.header = new DBFHeader();
-			this.header.read(this.dataInputStream, charset, showDeletedRows);
+			this.header.read(this.dataInputStream, charset, showDeletedRows, longCharSupportEnabled);
 			setCharset(this.header.getUsedCharset());
 			/* it might be required to leap to the start of records at times */
 			int fieldSize = this.header.getFieldDescriptorSize();
